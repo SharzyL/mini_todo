@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Empty</string>
+    <string name="test">Test</string>
+    <string name="test_long">this is a very long sentence, as we can see, it is actually very long… It included some important information
+    which everyone loves.</string>
+    <string name="Delete">Delete</string>
+    <string name="uncompleted_only">Uncompleted only</string>
+    <string name="completed_only">Completed only</string>
+    <string name="show_all">Show all items</string>
+    <string name="Edit">Edit</string>
+</resources>

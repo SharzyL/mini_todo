@@ -1,0 +1,46 @@
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:statusBarColor">@color/colorLightBg</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <!--<item name="toolbarStyle">@style/MyToolBar</item>-->
+
+    </style>
+
+    <style name="TodoItem">
+        <item name="android:paddingVertical">3dp</item>
+    </style>
+
+    <style name="TodoTitle">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="TodoDetail">
+        <item name="android:paddingStart">12dp</item>
+    </style>
+
+    <style name="TitleText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/colorLightText</item>
+    </style>
+
+    <style name="MyToolBar">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:titleTextColor">#FFFFFF</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+    <style name="inputTitle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingHorizontal">6dp</item>
+    </style>
+
+</resources>

@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="inputLineHeight">48dp</dimen>
+    <dimen name="toolBarHeight">52dp</dimen>
+</resources>

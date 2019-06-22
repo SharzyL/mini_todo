@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,9 +22,9 @@ import androidx.room.RoomDatabase;
 import androidx.room.Update;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
-//TODO: return Array<TodoItem> for TodoItemDao.getItems()
 @Entity
 class TodoItem {
     @PrimaryKey(autoGenerate = true)
@@ -52,7 +53,13 @@ interface TodoItemDao {
     void deleteItems(TodoItem... item);
 
     @Query("SELECT * FROM TodoItem")
-    TodoItem[] getAllItems();
+    List<TodoItem> getAllItems();
+
+    @Query("SELECT * FROM TodoItem WHERE completed = 1")
+    List<TodoItem> getCompletedItems();
+
+    @Query("SELECT * FROM TodoItem WHERE completed = 0")
+    List<TodoItem> getUncompletedItems();
 }
 
 @Database(entities = {TodoItem.class}, version = 1)
@@ -95,6 +102,7 @@ class TodoItemAdapter extends RecyclerView.Adapter<TodoItemAdapter.TodoItemHolde
     public interface onItemClickListener {
         void onItemClick(View view, int position);
         void onItemLongClick(View view, int position);
+        void onItemChecked(View view, int position, boolean b);
     }
 
     private onItemClickListener onItemClickListener;
@@ -138,6 +146,15 @@ class TodoItemAdapter extends RecyclerView.Adapter<TodoItemAdapter.TodoItemHolde
                 return true;
             }
         });
+
+        holder.todoTitle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onItemChecked(holder.itemView, holder.getLayoutPosition(), b);
+                }
+            }
+        });
     }
 
     @Override
@@ -154,7 +171,7 @@ class itemCache {
         BEFORE_EDIT,
         AFTER_EDIT,
         TO_BE_DELETED,
-    };
+    }
     static STATE state = STATE.EMPTY;
     private static TodoItem currentItem;
     static void set(TodoItem item) {

@@ -7,8 +7,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -17,6 +21,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,14 +29,23 @@ public class MainActivity extends AppCompatActivity {
     private final ArrayList<TodoItem> items = new ArrayList<>();
     private TodoItemDB db;
     private RecyclerView recyclerView;
+    SharedPreferences sp;
+    static class VIEW_MODE {
+        static final int ALL = 0, COMPLETED = 1, UNCOMPLETED = 2;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        sp = getSharedPreferences("preferences", MODE_PRIVATE);
+        boolean darkMode = sp.getBoolean("dark mode", false);
+        int viewMode = sp.getInt("view mode", VIEW_MODE.ALL);
+
         Toolbar myToolbar = findViewById(R.id.MainToolbar);
-        myToolbar.inflateMenu(R.menu.menu_main);
+        myToolbar.inflateMenu(R.menu.menu_add_item);
+        setSupportActionBar(myToolbar);
 
         FloatingActionButton fab = findViewById(R.id.AddItem);
         fab.setOnClickListener(new FloatingActionButton.OnClickListener() {
@@ -61,15 +75,25 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onItemLongClick(View view, int position) {
-//                Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
-//                itemCache.state = itemCache.STATE.BEFORE_EDIT;
-//                itemCache.set(items.get(position));
-//                startActivity(intent);
+                // TODO: multi-select support
+            }
+
+            @Override
+            public void onItemChecked(View view, int position, boolean b) {
+                TodoItem item = items.get(position);
+                item.completed = b;
+                new updateItems(MainActivity.this, item).execute();
             }
         });
         recyclerView.setAdapter(todoItemAdapter);
+        new getItems(this, viewMode).execute();
+    }
 
-        new getItems(this).execute();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
     }
 
     @Override
@@ -126,17 +150,37 @@ public class MainActivity extends AppCompatActivity {
 
     static class getItems extends dbOperation {
 
-        getItems(MainActivity activity) {
+        int condition;
+
+        getItems(MainActivity activity, int condition) {
             super(activity);
+            this.condition = condition;
         }
 
         @Override
         void getData(MainActivity activity) {
-            activity.items.addAll(Arrays.asList(activity.db.todoItemDao().getAllItems()));
+            List<TodoItem> items;
+            TodoItemDao dao = activity.db.todoItemDao();
+            switch (condition) {
+                case VIEW_MODE.ALL:
+                    items = dao.getAllItems();
+                    break;
+                case VIEW_MODE.COMPLETED:
+                    items = dao.getCompletedItems();
+                    break;
+                case VIEW_MODE.UNCOMPLETED:
+                    items = dao.getUncompletedItems();
+                    break;
+                default:
+                    throw new IllegalArgumentException();
+            }
+            activity.items.clear();
+            activity.items.addAll(items);
         }
 
         @Override
         void renderData(MainActivity activity) {
+            Log.d("mew", activity.items.toString());
             Objects.requireNonNull(activity.recyclerView.getAdapter()).notifyDataSetChanged();
         }
     }
@@ -204,7 +248,24 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.pref_view_all:
+                new getItems(this, VIEW_MODE.ALL).execute();
+                sp.edit().putInt("view mode", VIEW_MODE.ALL).apply();
+                return true;
+            case R.id.pref_view_completed:
+                new getItems(this, VIEW_MODE.COMPLETED).execute();
+                sp.edit().putInt("view mode", VIEW_MODE.COMPLETED).apply();
+                return true;
+            case R.id.pref_view_uncompleted:
+                new getItems(this, VIEW_MODE.UNCOMPLETED).execute();
+                sp.edit().putInt("view mode", VIEW_MODE.UNCOMPLETED).apply();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
+
+//TODO: setting interface
 

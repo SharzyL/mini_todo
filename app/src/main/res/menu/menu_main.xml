@@ -4,14 +4,14 @@
     <item
         android:id="@+id/pref_view_uncompleted"
         android:checked="false"
-        android:title="@string/uncompleted_only"
+        android:title="@string/_uncompleted_only"
         app:showAsAction="never" />
     <item
         android:id="@+id/pref_view_completed"
-        android:title="@string/completed_only"
+        android:title="@string/_completed_only"
         app:showAsAction="never" />
     <item
         android:id="@+id/pref_view_all"
-        android:title="@string/show_all"
+        android:title="@string/_show_all"
         app:showAsAction="never" />
 </menu>

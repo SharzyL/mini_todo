@@ -19,11 +19,33 @@ import androidx.room.PrimaryKey;
 import androidx.room.Query;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverter;
+import androidx.room.TypeConverters;
 import androidx.room.Update;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+class DateConverter {
+    @TypeConverter
+    public static Date revertDate(long value) {
+        if (value == 0) {
+            return null;
+        }
+        return new Date(value);
+    }
+
+    @TypeConverter
+    public static long converterDate(Date value) {
+        if (value == null) {
+            return 0;
+        }
+        return value.getTime();
+    }
+}
 
 @Entity
 class TodoItem {
@@ -33,11 +55,24 @@ class TodoItem {
     String title;
     String detail;
     boolean completed;
+    boolean setAlarmed;
+    Date alarmDate = null;
 
-    TodoItem(String title, String detail) {
+    TodoItem(String title, String detail, Date alarmDate) {
         this.title = title;
         this.detail = detail;
         this.completed = false;
+        setAlarmDate(alarmDate);
+    }
+
+    void setAlarmDate(Date date) {
+        if (date != null) {
+            this.setAlarmed =true;
+            this.alarmDate = date;
+        } else {
+            this.setAlarmed = false;
+            this.alarmDate = null;
+        }
     }
 }
 
@@ -63,6 +98,7 @@ interface TodoItemDao {
 }
 
 @Database(entities = {TodoItem.class}, version = 1)
+@TypeConverters(DateConverter.class)
 abstract class TodoItemDB extends RoomDatabase {
     abstract TodoItemDao todoItemDao();
 
@@ -88,10 +124,12 @@ class TodoItemAdapter extends RecyclerView.Adapter<TodoItemAdapter.TodoItemHolde
         // each data item is just a string in this case
         CheckBox todoTitle;
         TextView todoDetail;
+        TextView alarmDateView;
         TodoItemHolder(@NonNull View itemView) {
             super(itemView);
             todoTitle = itemView.findViewById(R.id.todo_title);
             todoDetail = itemView.findViewById(R.id.todo_detail);
+            alarmDateView = itemView.findViewById(R.id.alarmDateView);
         }
     }
 
@@ -127,6 +165,9 @@ class TodoItemAdapter extends RecyclerView.Adapter<TodoItemAdapter.TodoItemHolde
         holder.todoTitle.setChecked(todoItem.completed);
         holder.todoTitle.setText(todoItem.title);
         holder.todoDetail.setText(todoItem.detail);
+        if (todoItem.setAlarmed) {
+            holder.alarmDateView.setText(todoItem.alarmDate.toString());
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

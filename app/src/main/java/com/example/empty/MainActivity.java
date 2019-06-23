@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new FloatingActionButton.OnClickListener() {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
+                itemCache.clear();
                 itemCache.state = itemCache.STATE.BEFORE_ADD;
                 startActivity(intent);
             }

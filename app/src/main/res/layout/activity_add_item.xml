@@ -13,10 +13,10 @@
         android:layout_height="@dimen/toolBarHeight"
         android:elevation="4dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="@string/Edit" />
+        app:title="@string/_edit" />
 
     <LinearLayout
-        android:layout_width="395dp"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="8dp"
         android:orientation="vertical"
@@ -33,20 +33,45 @@
             <TextView
                 android:id="@+id/textView3"
                 style="@style/inputTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/test" />
+                android:layout_height="wrap_content"
+                android:text="@string/_title" />
 
             <EditText
                 android:id="@+id/editItemTitle"
-                android:layout_width="wrap_content"
+                style="@style/Widget.AppCompat.EditText"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:autofillHints=""
                 android:ems="10"
-                android:inputType="textPersonName"
-                android:text="@string/test" />
+                android:inputType="textPersonName" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/alarmRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/inputTitle"
+                android:layout_height="wrap_content"
+                android:text="@string/_remind" />
+
+            <TextView
+                android:id="@+id/dateView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:minLines="2" />
+
+            <Button
+                android:id="@+id/btnDeleteAlarm"
+                style="@style/InlineButton"
+                android:layout_height="wrap_content"
+                android:text="@string/_delete" />
         </LinearLayout>
 
         <LinearLayout
@@ -57,28 +82,20 @@
             <TextView
                 android:id="@+id/textView5"
                 style="@style/inputTitle"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/test" />
+                android:text="@string/_detail" />
 
             <EditText
                 android:id="@+id/editItemDetail"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:autofillHints=""
                 android:ems="10"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
-                android:text="@string/test_long" />
+                android:minLines="5" />
         </LinearLayout>
-
-        <Button
-            android:id="@+id/btnDeleteItem"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/Delete" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

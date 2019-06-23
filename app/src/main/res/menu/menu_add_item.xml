@@ -3,7 +3,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/submint"
-        android:title="@string/test"
+        android:id="@+id/toolAlarm"
+        android:title="@string/_alarm"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/toolDelete"
+        android:title="@string/_delete"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/toolSubmit"
+        android:title="@string/_submit"
+        app:showAsAction="always" />
 </menu>

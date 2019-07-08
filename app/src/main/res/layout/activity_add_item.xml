@@ -30,12 +30,6 @@
             android:layout_height="@dimen/inputLineHeight"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/textView3"
-                style="@style/inputTitle"
-                android:layout_height="wrap_content"
-                android:text="@string/_title" />
-
             <EditText
                 android:id="@+id/editItemTitle"
                 style="@style/Widget.AppCompat.EditText"
@@ -44,7 +38,28 @@
                 android:layout_weight="1"
                 android:autofillHints=""
                 android:ems="10"
+                android:hint="@string/_title"
                 android:inputType="textPersonName" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/editItemDetail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:autoLink="all"
+                android:autofillHints=""
+                android:background="@drawable/text_box"
+                android:ems="10"
+                android:gravity="start|top"
+                android:hint="@string/_detail"
+                android:inputType="textMultiLine"
+                android:minLines="5" />
         </LinearLayout>
 
         <LinearLayout
@@ -71,30 +86,7 @@
                 android:id="@+id/btnDeleteAlarm"
                 style="@style/InlineButton"
                 android:layout_height="wrap_content"
-                android:text="@string/_delete" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/textView5"
-                style="@style/inputTitle"
-                android:layout_height="wrap_content"
-                android:text="@string/_detail" />
-
-            <EditText
-                android:id="@+id/editItemDetail"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:autofillHints=""
-                android:ems="10"
-                android:gravity="start|top"
-                android:inputType="textMultiLine"
-                android:minLines="5" />
+                android:text="@string/_unset" />
         </LinearLayout>
 
     </LinearLayout>

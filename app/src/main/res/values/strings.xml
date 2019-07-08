@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Empty</string>
+    <string name="app_name">MinTodo</string>
     <string name="test">Test</string>
     <string name="test_long">this is a very long sentence, as we can see, it is actually very long… It included some important information
     which everyone loves.</string>
@@ -16,6 +16,10 @@
     <string name="_remind">Remind at</string>
     <string name="_alarm" >Alarm</string>
     <string name="_submit">Submit</string>
+    <string name="_warning">Warning</string>
+    <string name="_get_it">Get it</string>
+    <string name="_early_alarm">The alarm should be later than now.</string>
+    <string name="_empty_title">The title should not be empty.</string>
 
 
 </resources>

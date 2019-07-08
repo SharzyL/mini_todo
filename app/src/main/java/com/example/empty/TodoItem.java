@@ -22,12 +22,12 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
 import androidx.room.Update;
-import androidx.room.migration.Migration;
-import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 class DateConverter {
     @TypeConverter
@@ -45,6 +45,11 @@ class DateConverter {
         }
         return value.getTime();
     }
+
+    static String toString(Date date) {
+        return new SimpleDateFormat("yyyy-MM-dd E\nhh:mm", Locale.US).format(date);
+    }
+
 }
 
 @Entity
@@ -166,7 +171,12 @@ class TodoItemAdapter extends RecyclerView.Adapter<TodoItemAdapter.TodoItemHolde
         holder.todoTitle.setText(todoItem.title);
         holder.todoDetail.setText(todoItem.detail);
         if (todoItem.setAlarmed) {
-            holder.alarmDateView.setText(todoItem.alarmDate.toString());
+            holder.alarmDateView.setText(
+                    DateConverter.toString(todoItem.alarmDate)
+                            .replace("\n", " ")
+            );
+        } else {
+            holder.alarmDateView.setText("");
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

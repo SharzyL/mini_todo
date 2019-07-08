@@ -1,22 +1,22 @@
 package com.example.empty;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import androidx.appcompat.view.menu.ActionMenuItemView;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -42,28 +42,23 @@ public class AddItemActivity extends AppCompatActivity {
         dateView = findViewById(R.id.dateView);
         alarmRow =findViewById(R.id.alarmRow);
 
+        Toolbar myToolbar = findViewById(R.id.addItemToolBar);
+        myToolbar.inflateMenu(R.menu.menu_add_item);
+        setSupportActionBar(myToolbar);
+
         if (itemCache.state == itemCache.STATE.BEFORE_EDIT) {
             TodoItem item = itemCache.get();
             editItemTitle.setText(item.title);
             editItemDetail.setText(item.detail);
             if (item.setAlarmed) {
                 alarmDate = item.alarmDate;
-                dateView.setText(alarmDate.toString());
+                dateView.setText(DateConverter.toString(alarmDate));
+            } else {
+                alarmRow.setVisibility(View.GONE);
             }
         }
 
-        Toolbar myToolbar = findViewById(R.id.addItemToolBar);
-        myToolbar.inflateMenu(R.menu.menu_add_item);
-        setSupportActionBar(myToolbar);
-
         if (itemCache.state == itemCache.STATE.BEFORE_ADD) {
-//            findViewById(R.id.toolDelete).setVisibility(View.GONE);
-            ActionMenuItemView item = findViewById(R.id.toolDelete);
-            Log.e("mew", item.getText().toString());
-//            findViewById(R.id.toolDelete).setEnabled(false);
-        }
-
-        if (itemCache.get() == null || itemCache.get().setAlarmed) {
             findViewById(R.id.toolAlarm).setVisibility(View.GONE);
             alarmRow.setVisibility(View.GONE);
         }
@@ -76,6 +71,23 @@ public class AddItemActivity extends AppCompatActivity {
                 findViewById(R.id.toolAlarm).setVisibility(View.VISIBLE);
             }
         });
+
+    }
+
+    void alert(String text) {
+        new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string._warning))
+                .setMessage(text)
+                .setPositiveButton(
+                        getResources().getText(R.string._get_it),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                .create()
+                .show();
     }
 
     void setAlarmDate() {
@@ -91,7 +103,9 @@ public class AddItemActivity extends AppCompatActivity {
                         alarmDate = new GregorianCalendar(year, month, day, hour, minute, 0).getTime();
                         findViewById(R.id.toolAlarm).setVisibility(View.GONE);
                         alarmRow.setVisibility(View.VISIBLE);
-                        dateView.setText(alarmDate.toString());
+                        dateView.setText(
+                                DateConverter.toString(alarmDate)
+                        );
 
                     }
                 }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show();
@@ -103,7 +117,17 @@ public class AddItemActivity extends AppCompatActivity {
     void submit() {
         String itemTitle = editItemTitle.getText().toString();
         String itemDetail = editItemDetail.getText().toString();
-
+        String alertText = "";
+        if (alarmDate != null && alarmDate.before(new Date())) {
+            alertText += getResources().getString(R.string._early_alarm) + "\n";
+        }
+        if (itemTitle.isEmpty()) {
+            alertText += getResources().getString(R.string._empty_title) + "\n";
+        }
+        if (!alertText.isEmpty()) {
+            alert(alertText.substring(0, alertText.length() - 1));
+            return;
+        }
         switch (itemCache.state) {
             case BEFORE_ADD:
                 itemCache.set(new TodoItem(itemTitle, itemDetail, alarmDate));
